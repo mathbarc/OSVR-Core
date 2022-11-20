@@ -27,6 +27,7 @@
 #include "cvUtils.h"
 
 // Library/third-party includes
+#include <opencv2/core/version.hpp>
 #include <opencv2/imgproc/imgproc.hpp> // for moments, boundingRect, arcLength...
 
 // Standard includes
@@ -125,8 +126,13 @@ namespace vbtracker {
         cv::threshold(grayImage_, binarized, thresh, 255, cv::THRESH_BINARY);
         std::vector<ContourType> contours;
         std::vector<cv::Vec4i> hierarchy;
+        #if CV_MAJOR_VERSION < 4
         cv::findContours(binarized, contours, hierarchy, CV_RETR_CCOMP,
                          CV_CHAIN_APPROX_NONE);
+        #else
+        cv::findContours(binarized, contours, hierarchy, cv::RETR_CCOMP,
+                         cv::CHAIN_APPROX_NONE);
+        #endif
         auto n = contours.size();
         std::vector<ContourType> ret;
         for (std::size_t i = 0; i < n; ++i) {
@@ -151,10 +157,17 @@ namespace vbtracker {
         cv::Mat scratchNot = ~floodFillMask_;
         cv::Mat grayClone = grayImage_.clone();
         cv::Rect filledBounds;
+        #if CV_MAJOR_VERSION < 4
         auto m_area = cv::floodFill(
             grayClone, floodFillMask_, peakCenter, 255, &filledBounds, loDiff,
             upDiff, CV_FLOODFILL_MASK_ONLY | (/* connectivity 4 or 8 */ 4) |
                         (/* value to write in to mask */ 255 << 8));
+        #else
+        auto m_area = cv::floodFill(
+            grayClone, floodFillMask_, peakCenter, 255, &filledBounds, loDiff,
+            upDiff, cv::FLOODFILL_MASK_ONLY | (/* connectivity 4 or 8 */ 4) |
+                        (/* value to write in to mask */ 255 << 8));
+        #endif
         // Now floodFillMask_ contains the mask with both our point
         // and all other points so far. We need to split them by ANDing with
         // the NOT of the old flood-fill mask we saved earlier.

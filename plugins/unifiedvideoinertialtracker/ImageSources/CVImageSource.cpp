@@ -26,6 +26,7 @@
 #include "ImageSourceFactories.h"
 
 // Library/third-party includes
+#include <opencv2/core/version.hpp>
 #include <opencv2/highgui/highgui.hpp> // for image capture
 
 // Standard includes
@@ -86,9 +87,15 @@ namespace vbtracker {
     cv::Size OpenCVImageSource::resolution() const { return m_res; }
 
     void OpenCVImageSource::storeRes() {
+        #if CV_MAJOR_VERSION < 4
         int height = static_cast<int>(m_camera->get(CV_CAP_PROP_FRAME_HEIGHT));
         int width = static_cast<int>(m_camera->get(CV_CAP_PROP_FRAME_WIDTH));
         m_res = cv::Size(width, height);
+        #else
+        int height = static_cast<int>(m_camera->get(cv::CAP_PROP_FRAME_HEIGHT));
+        int width = static_cast<int>(m_camera->get(cv::CAP_PROP_FRAME_WIDTH));
+        m_res = cv::Size(width, height);
+        #endif
     }
 } // namespace vbtracker
 } // namespace osvr

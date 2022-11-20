@@ -219,7 +219,7 @@ if(BUILD_WITH_OPENCV)
         include(OpenCVAndroid)
     endif()
     # Include dir specifically required by 3.0 and up, but missing from config.
-    if(NOT OpenCV_VERSION VERSION_LESS 3.0.0)
+    if(OpenCV_VERSION VERSION_LESS 4.0.0)
         list(REMOVE_DUPLICATES OpenCV_INCLUDE_DIRS)
         set_target_properties(opencv_core PROPERTIES
             INTERFACE_INCLUDE_DIRECTORIES "${OpenCV_INCLUDE_DIRS}")

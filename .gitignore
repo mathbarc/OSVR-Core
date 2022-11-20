@@ -8,6 +8,9 @@
 # VS Code
 .vscode/
 
+# Qt Creator
+CMakeLists.txt.user
+
 # Generated config files for editors
 /.clang_complete
 /.linter-clang-flags

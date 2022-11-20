@@ -27,6 +27,7 @@
 #include <osvr/Util/TimeValueChrono.h>
 
 // Library/third-party includes
+#include <opencv2/core/version.hpp>
 #include <opencv2/highgui/highgui.hpp> // for image capture
 
 // Standard includes
@@ -76,7 +77,11 @@ namespace vbtracker {
             cv::Mat image;
             std::cout << "Trying to read image from " << fileName.str()
                       << std::endl;
+            #if CV_MAJOR_VERSION < 4
             image = cv::imread(fileName.str(), CV_LOAD_IMAGE_COLOR);
+            #else
+            image = cv::imread(fileName.str(), cv::IMREAD_COLOR);
+            #endif
             if (!image.data) {
                 break;
             }

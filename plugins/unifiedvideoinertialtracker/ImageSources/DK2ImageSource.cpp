@@ -27,6 +27,7 @@
 #include "Oculus_DK2.h"
 
 // Library/third-party includes
+#include <opencv2/core/version.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
 // Standard includes
@@ -82,7 +83,11 @@ namespace vbtracker {
         m_camera->retrieveColor(m_scratch, timestamp);
 
         gray = osvr::oculus_dk2::unscramble_image(m_scratch);
+        #if CV_MAJOR_VERSION < 4
         cv::cvtColor(gray, color, CV_GRAY2RGB);
+        #else
+        cv::cvtColor(gray, color, cv::COLOR_GRAY2RGB);
+        #endif
     }
 
     void DK2WrappedImageSource::retrieveColor(

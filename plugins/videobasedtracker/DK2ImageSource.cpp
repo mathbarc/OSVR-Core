@@ -78,7 +78,11 @@ namespace vbtracker {
         m_camera->retrieveColor(m_scratch);
 
         gray = osvr::oculus_dk2::unscramble_image(m_scratch);
+        #if CV_MAJOR_VERSION < 4
         cv::cvtColor(gray, color, CV_GRAY2RGB);
+        #else
+        cv::cvtColor(gray, color, cv::COLOR_GRAY2RGB);
+        #endif
     }
 
     void DK2WrappedImageSource::retrieveColor(cv::Mat &color) {

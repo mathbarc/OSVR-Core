@@ -26,6 +26,7 @@
 #include "ImageSource.h"
 
 // Library/third-party includes
+#include <opencv2/core/version.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
 // Standard includes
@@ -37,7 +38,11 @@ namespace vbtracker {
     void ImageSource::retrieve(cv::Mat &color, cv::Mat &gray,
                                osvr::util::time::TimeValue &timestamp) {
         retrieveColor(color, timestamp);
+        #if CV_MAJOR_VERSION < 4
         cv::cvtColor(color, gray, CV_RGB2GRAY);
+        #else
+        cv::cvtColor(color, gray, cv::COLOR_RGB2GRAY);
+        #endif
     }
 } // namespace vbtracker
 } // namespace osvr
